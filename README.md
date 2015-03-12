@@ -1,2 +1,1 @@
 # FoxBot
-IRCbot
