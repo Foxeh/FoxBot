@@ -1,18 +1,19 @@
-import re, sys, unicodedata, time, math
+import re,sys,unicodedata,time,math,httplib,urllib
 from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
 
-################################################################################
-########                        S e t t i n g s                         ########
-################################################################################
+###########################################################
+########              S e t t i n g s              ########
+###########################################################
 identity = {
     'FoxBot': {
         'nickname': 'FoxBot',
         'realname': 'IRCBot',
         'username': '',
-        'nickserv_pw': ''
+        'nickserv_pw': '',
+        'adminPass': ''
     },
 }
 networks = {
@@ -22,7 +23,6 @@ networks = {
         'ssl': False,
         'identity': identity['FoxBot'],
         'autojoin': (
-            '',
             '',
         )
     },
@@ -38,7 +38,7 @@ networks = {
         )
     }
 """
-################################################################################
+###########################################################
 log.startLogging(sys.stdout)
 
 class TwistedBot(irc.IRCClient):
@@ -81,28 +81,10 @@ class TwistedBot(irc.IRCClient):
         host = user.split('!', 1)[1]
         usernick = user.split('!', 1)[0]
         msgParts = msg.split(' ')
-
+        
         if channel == self.nickname:
-            print('<%s> %s' % (usernick, msg))
 
-            if msgParts[0].startswith(""):
-
-                self.admin.append(host)
-                msg = "You are now logged in for admin commands."
-                self.msg(usernick, msg)
-                msg = " "
-                self.msg(usernick,msg)
-                msg = "     \0034,1!join\003 \x1Fchannel\x1F   Joins channel specified"
-                self.msg(usernick, msg)
-                msg = "     \0034,1!leave\003            Leaves current channel"
-                self.msg(usernick,msg)
-                msg = "     \0034,1!logout\003           Logout of admin"
-                self.msg(usernick, msg)
-
-            else:
-
-                msg = "Incorrect login, you fail."
-                self.msg(usernick, msg)
+            self.adminLogin(user, channel, msg)
 
         if (timer > 3) or host in self.admin:
 
@@ -126,18 +108,13 @@ class TwistedBot(irc.IRCClient):
                     self.msg(channel, msg)
                     self.part(channel1)
 
-            elif msgParts[0].startswith("!login"):
-
-                msg = "Password?"
-                self.msg(usernick, msg)
-
             elif msgParts[0].startswith("!logout") and host in self.admin:
 
                 self.admin.remove(host)
                 msg = "You have been removed from admin list."
                 self.msg(channel, msg)
 
-            elif msgParts[0].startswith("!calc"):
+            elif msgParts[0].startswith("!g"):
 
                 self.calc(user, channel, msg)
 
@@ -161,26 +138,94 @@ class TwistedBot(irc.IRCClient):
 
         elif msg == "!info":
 
-            msg = "I am a bot, made by Fox. \002!info commands\002 for a list of commands."
+            msg = "I am a bot, made by Fox. \002!coms\002 for a list of commands."
             self.notice(usernick, msg)
             msg = "Will add more info at a later time."
             self.notice(usernick, msg)
+        
+        elif msg == "!coms":
 
-        elif msg == "!info commands":
+            commands = "Commands: ping | g"
+            helpcom = "Use !help \002command\002 for help with a command."
+            self.notice(usernick, commands)
+            self.notice(usernick, helpcom)
 
-            msg1 = "List of user commands."
-            msg2 = " "
-            msg3 = "     !ping      Pong!"
-            self.notice(usernick, msg1)
-            self.notice(usernick, msg2)
-            self.notice(usernick, msg3)
+        elif msgParts[0] == "!help":
 
-    def calc(self, user, channel, msg):
+            self.helpComs(user, channel, msg)
+    
+    def adminLogin(self, user, channel, msg):
+        
+        network = self.factory.network
+        host = user.split('!', 1)[1]
+        usernick = user.split('!', 1)[0]
+        msgParts = msg.split(' ')
+        
+        print('<%s> %s' % (usernick, msgParts))
+
+        if msg == ("!login %s" % network['identity']['adminPass']):
+
+            self.admin.append(host)
+            msg = "You are now logged in for admin commands."
+            self.msg(usernick, msg)
+            msg = " "
+            self.msg(usernick,msg)
+            msg = "     \0034,1!join\003 \x1Fchannel\x1F   Joins channel specified"
+            self.msg(usernick, msg)
+            msg = "     \0034,1!leave\003            Leaves current channel"
+            self.msg(usernick,msg)
+            msg = "     \0034,1!logout\003           Logout of admin"
+            self.msg(usernick, msg)
+
+        elif msgParts[0].startswith("!login") and msg != ("!login %s" % network['identity']['adminPass']):
+            
+            msg = "Incorrect login, go away."
+            self.msg(usernick, msg)
+        
+        else:
+            pass
+
+    def helpComs(self, user, channel, msg):
 
         usernick = user.split('!', 1)[0]
         msgParts = msg.split(' ')
 
+        if msgParts[1] == "ping":
 
+            msg = "Ping: Pong..."
+            self.notice(usernick, msg)
+
+        elif msgParts[1] == "g":
+
+            msg = "Uses a google search to hopefully solve your problems."
+            self.notice(usernick, msg)
+
+    def calc(self, user, channel, msg):
+
+        usernick = user.split('!', 1)[0]
+        msgParts = msg.split(' ', 1)
+
+        query=urllib.urlencode({'q':msgParts[1]})
+        
+        start='<h2 class="r" style="display:inline;font-size:138%">'
+        end='</h2>'
+    
+        google=httplib.HTTPConnection("www.google.com")
+        google.request("GET","/search?"+query)
+        search=google.getresponse()
+        data=search.read()
+    
+        if data.find(start)==-1:
+            
+            msg = "Follow link to find your answer: www.google.com/search?"+query
+            self.msg(channel, msg)
+        
+        else:
+            
+            begin=data.index(start)
+            result=data[begin+len(start):begin+data[begin:].index(end)]
+            result = result.replace("<font size=-2> </font>",",").replace(" &#215; 10<sup>","E").replace("</sup>","").replace("\xa0",",")
+            self.msg(channel, result)
 
     def userJoined(self, user, channel):
 
