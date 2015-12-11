@@ -1,8 +1,10 @@
-import re,sys,unicodedata,time,math,httplib,urllib
+import re,sys,unicodedata,time,math,httplib,urllib,wolframalpha
 from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
+from paramiko.channel import Channel
+from wolfram import wolfram
 
 ###########################################################
 ########              S e t t i n g s              ########
@@ -13,7 +15,8 @@ identity = {
         'realname': 'IRCBot',
         'username': '',
         'nickserv_pw': '',
-        'adminPass': ''
+        'adminPass': '',
+        'wolframID': ''
     },
 }
 networks = {
@@ -42,9 +45,11 @@ networks = {
 log.startLogging(sys.stdout)
 
 class TwistedBot(irc.IRCClient):
-
-    admin = []
-    start = 0
+    
+    def __init__(self):
+        
+        self.admin = []
+        self.startTime = 0
 
     def connectionMade(self):
 
@@ -76,7 +81,7 @@ class TwistedBot(irc.IRCClient):
 
     def privmsg(self, user, channel, msg):
 
-        timer = (time.time() - self.start)
+        timer = (time.time() - self.startTime)
 
         host = user.split('!', 1)[1]
         usernick = user.split('!', 1)[0]
@@ -114,15 +119,19 @@ class TwistedBot(irc.IRCClient):
                 msg = "You have been removed from admin list."
                 self.msg(channel, msg)
 
-            elif msgParts[0].startswith("!g"):
+            elif msgParts[0].startswith("!goog"):
 
-                self.calc(user, channel, msg)
+                self.callGoog(user, channel, msg)
+                
+            elif msgParts[0].startswith("!wolf"):
+                
+                self.callWolf(user, channel, msg)
 
             else:
 
                 self.commands(user, channel, msg)
 
-        self.start = time.time()
+        self.startTime = time.time()
 
     def commands(self, user, channel, msg):
 
@@ -145,7 +154,7 @@ class TwistedBot(irc.IRCClient):
         
         elif msg == "!coms":
 
-            commands = "Commands: ping | g"
+            commands = "Commands: ping | goog | wolf"
             helpcom = "Use !help \002command\002 for help with a command."
             self.notice(usernick, commands)
             self.notice(usernick, helpcom)
@@ -195,12 +204,17 @@ class TwistedBot(irc.IRCClient):
             msg = "Ping: Pong..."
             self.notice(usernick, msg)
 
-        elif msgParts[1] == "g":
+        elif msgParts[1] == "goog":
 
-            msg = "Uses a google search to hopefully solve your problems."
+            msg = "Uses a google search"
             self.notice(usernick, msg)
+        
+        elif msgParts[1] == "wolf":
+            
+            msg = "Searches Wolfram Alpha... Wolfram knows all."
+            self.notive(usernick, msg)
 
-    def calc(self, user, channel, msg):
+    def callGoog(self, user, channel, msg):
 
         usernick = user.split('!', 1)[0]
         msgParts = msg.split(' ', 1)
@@ -226,7 +240,36 @@ class TwistedBot(irc.IRCClient):
             result=data[begin+len(start):begin+data[begin:].index(end)]
             result = result.replace("<font size=-2> </font>",",").replace(" &#215; 10<sup>","E").replace("</sup>","").replace("\xa0",",")
             self.msg(channel, result)
-
+            
+    def callWolf(self, user, channel, msg):
+        
+        network = self.factory.network
+        usernick = user.split('!', 1)[0]
+        msgParts = msg.split(' ', 1)
+        appid = network['identity']['wolframID']
+        query = msgParts[1]
+        print('<%s> %s' % (usernick, msgParts))
+        
+        self.wolfram = wolfram(appid, query)
+        dataWolf = self.wolfram.search()
+        
+        if not dataWolf:
+            print "Nothing Found"
+            msg = "Wolfram could not understand you"
+            self.notice(usernick, msg)
+        
+        try:
+            msg = dataWolf['Result']
+            self.notice(usernick, msg)
+        except:
+            for res in dataWolf:
+                try:
+                    msg = res+": "+dataWolf[res]
+                    self.notice(usernick, msg)
+                except:
+                    print "Error Somewhere"
+            
+                
     def userJoined(self, user, channel):
 
         usernick = user.split('!', 1)[0]
