@@ -1,7 +1,7 @@
 import urllib,urllib2,httplib
 from xml.etree import ElementTree as etree
  
-class wolfram(object):
+class Wolfram(object):
         
     def __init__(self, appid, query):
         self.appid = appid
@@ -32,5 +32,5 @@ class wolfram(object):
         return data_dics
  
 if __name__ == "__main__":
-    w = wolfram()
+    w = Wolfram()
       

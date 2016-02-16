@@ -1,10 +1,9 @@
-import re,sys,unicodedata,time,math,httplib,urllib,wolframalpha
+import re,sys,unicodedata,time,math,httplib,urllib
 from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
-from paramiko.channel import Channel
-from wolfram import wolfram
+from wolfram import Wolfram
 
 ###########################################################
 ########              S e t t i n g s              ########
@@ -35,7 +34,7 @@ networks = {
         'host': '192.168.0.0',
         'port': 6667,
         'ssl': False,
-        'identity': identity['sampleBot'],
+        'identity': identity['FoxBot'],
         'autojoin': (
             'sample',
         )
@@ -250,7 +249,7 @@ class TwistedBot(irc.IRCClient):
         query = msgParts[1]
         print('<%s> %s' % (usernick, msgParts))
         
-        self.wolfram = wolfram(appid, query)
+        self.wolfram = Wolfram(appid, query)
         dataWolf = self.wolfram.search()
         
         if not dataWolf:
