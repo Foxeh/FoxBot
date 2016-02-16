@@ -29,18 +29,6 @@ networks = {
         )
     },
 }
-"""  
-    # Format for Adding more networks
-    'ExampleNet': {
-        'host': '192.168.0.0',
-        'port': 6667,
-        'ssl': False,
-        'identity': identity['FoxBot'],
-        'autojoin': (
-            'sample',
-        )
-    }
-"""
 ###########################################################
 log.startLogging(sys.stdout)
 

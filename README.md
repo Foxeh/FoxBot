@@ -1,4 +1,4 @@
-# FoxBot
+# FoxBot, A twisted IRC Bot
 
 
 ### Packages
