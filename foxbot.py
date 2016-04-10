@@ -231,7 +231,7 @@ class TwistedBot(irc.IRCClient):
             msg = "Follow link to find your answer: www.google.com/search?"+query
             
             if type == 0:
-                self.notice(channel, msg)
+                self.notice(usernick, msg)
             elif type == 1:
                 self.msg(channel, msg)
         
@@ -241,7 +241,7 @@ class TwistedBot(irc.IRCClient):
             result = result.replace("<font size=-2> </font>",",").replace(" &#215; 10<sup>","E").replace("</sup>","").replace("\xa0",",")
             
             if type == 0:
-                self.notice(channel, result)
+                self.notice(usernick, result)
             elif type == 1:
                 self.msg(channel, result)
             
