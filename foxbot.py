@@ -228,7 +228,6 @@ class TwistedBot(irc.IRCClient):
         data=search.read()
     
         if data.find(start)==-1:
-            
             msg = "Follow link to find your answer: www.google.com/search?"+query
             
             if type == 0:
@@ -237,7 +236,6 @@ class TwistedBot(irc.IRCClient):
                 self.msg(channel, msg)
         
         else:
-            
             begin=data.index(start)
             result=data[begin+len(start):begin+data[begin:].index(end)]
             result = result.replace("<font size=-2> </font>",",").replace(" &#215; 10<sup>","E").replace("</sup>","").replace("\xa0",",")
@@ -266,7 +264,7 @@ class TwistedBot(irc.IRCClient):
             if type == 0:
                 self.notice(usernick, msg)
             elif type == 1:
-                self.notice(usernick, msg)
+                self.msg(usernick, msg)
         
         try:
             msg = dataWolf['Result']
@@ -274,7 +272,7 @@ class TwistedBot(irc.IRCClient):
             if type == 0:
                 self.notice(usernick, msg)
             elif type == 1:
-                self.notice(usernick, msg)
+                self.msg(usernick, msg)
 
         except:
             for res in dataWolf:
@@ -283,7 +281,7 @@ class TwistedBot(irc.IRCClient):
                     if type == 0:
                         self.notice(usernick, msg)
                     elif type == 1:
-                        self.notice(usernick, msg)
+                        self.msg(usernick, msg)
                         
                 except:
                     print "Error Somewhere"
