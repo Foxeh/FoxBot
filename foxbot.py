@@ -107,13 +107,23 @@ class TwistedBot(irc.IRCClient):
                 msg = "You have been removed from admin list."
                 self.msg(channel, msg)
 
-            elif msgParts[0].startswith("!goog"):
+            elif msgParts[0].startswith(".google") or msgParts[0].startswith("!google"):
 
-                self.callGoog(user, channel, msg)
+                if msgParts[0].startswith(".google"):
+                    type = 0
+                elif msgParts[0].startswith("!google"):
+                    type = 1
+
+                self.callGoog(user, channel, msg, type)
                 
-            elif msgParts[0].startswith("!wolf"):
+            elif msgParts[0].startswith(".wolf") or msgParts[0].startswith("!wolf"):
                 
-                self.callWolf(user, channel, msg)
+                if msgParts[0].startswith(".wolf"):
+                    type = 0
+                elif msgParts[0].startswith("!wolf"):
+                    type = 1
+                
+                self.callWolf(user, channel, msg, type)
 
             else:
 
@@ -192,7 +202,7 @@ class TwistedBot(irc.IRCClient):
             msg = "Ping: Pong..."
             self.notice(usernick, msg)
 
-        elif msgParts[1] == "goog":
+        elif msgParts[1] == "google":
 
             msg = "Uses a google search"
             self.notice(usernick, msg)
@@ -202,7 +212,7 @@ class TwistedBot(irc.IRCClient):
             msg = "Searches Wolfram Alpha... Wolfram knows all."
             self.notive(usernick, msg)
 
-    def callGoog(self, user, channel, msg):
+    def callGoog(self, user, channel, msg, type):
 
         usernick = user.split('!', 1)[0]
         msgParts = msg.split(' ', 1)
@@ -220,16 +230,24 @@ class TwistedBot(irc.IRCClient):
         if data.find(start)==-1:
             
             msg = "Follow link to find your answer: www.google.com/search?"+query
-            self.msg(channel, msg)
+            
+            if type == 0:
+                self.notice(channel, msg)
+            elif type == 1:
+                self.msg(channel, msg)
         
         else:
             
             begin=data.index(start)
             result=data[begin+len(start):begin+data[begin:].index(end)]
             result = result.replace("<font size=-2> </font>",",").replace(" &#215; 10<sup>","E").replace("</sup>","").replace("\xa0",",")
-            self.msg(channel, result)
             
-    def callWolf(self, user, channel, msg):
+            if type == 0:
+                self.notice(channel, result)
+            elif type == 1:
+                self.msg(channel, result)
+            
+    def callWolf(self, user, channel, msg, type):
         
         network = self.factory.network
         usernick = user.split('!', 1)[0]
@@ -244,16 +262,29 @@ class TwistedBot(irc.IRCClient):
         if not dataWolf:
             print "Nothing Found"
             msg = "Wolfram could not understand you"
-            self.notice(usernick, msg)
+            
+            if type == 0:
+                self.notice(usernick, msg)
+            elif type == 1:
+                self.notice(usernick, msg)
         
         try:
             msg = dataWolf['Result']
-            self.notice(usernick, msg)
+            
+            if type == 0:
+                self.notice(usernick, msg)
+            elif type == 1:
+                self.notice(usernick, msg)
+
         except:
             for res in dataWolf:
                 try:
                     msg = res+": "+dataWolf[res]
-                    self.notice(usernick, msg)
+                    if type == 0:
+                        self.notice(usernick, msg)
+                    elif type == 1:
+                        self.notice(usernick, msg)
+                        
                 except:
                     print "Error Somewhere"
             
