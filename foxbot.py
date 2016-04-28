@@ -126,7 +126,6 @@ class TwistedBot(irc.IRCClient):
                 self.callWolf(user, channel, msg, type)
 
             else:
-
                 self.commands(user, channel, msg)
 
         self.startTime = time.time()
@@ -188,9 +187,6 @@ class TwistedBot(irc.IRCClient):
             
             msg = "Incorrect login, go away."
             self.msg(usernick, msg)
-        
-        else:
-            pass
 
     def helpComs(self, user, channel, msg):
 
@@ -264,7 +260,7 @@ class TwistedBot(irc.IRCClient):
             if type == 0:
                 self.notice(usernick, msg)
             elif type == 1:
-                self.msg(usernick, msg)
+                self.msg(channel, msg)
         
         try:
             msg = dataWolf['Result']
@@ -272,7 +268,7 @@ class TwistedBot(irc.IRCClient):
             if type == 0:
                 self.notice(usernick, msg)
             elif type == 1:
-                self.msg(usernick, msg)
+                self.msg(channel, msg)
 
         except:
             for res in dataWolf:
@@ -281,7 +277,7 @@ class TwistedBot(irc.IRCClient):
                     if type == 0:
                         self.notice(usernick, msg)
                     elif type == 1:
-                        self.msg(usernick, msg)
+                        self.msg(channel, msg)
                         
                 except:
                     print "Error Somewhere"
