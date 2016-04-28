@@ -261,15 +261,13 @@ class TwistedBot(irc.IRCClient):
                 self.notice(usernick, msg)
             elif type == 1:
                 self.msg(channel, msg)
-        
-        try:
+
+        try: 
             msg = dataWolf['Result']
-            
             if type == 0:
                 self.notice(usernick, msg)
             elif type == 1:
                 self.msg(channel, msg)
-
         except:
             for res in dataWolf:
                 try:
@@ -278,19 +276,13 @@ class TwistedBot(irc.IRCClient):
                         self.notice(usernick, msg)
                     elif type == 1:
                         self.msg(channel, msg)
-                        
                 except:
-                    print "Error Somewhere"
-            
+                    e = sys.exc_info()[0]
+                    print ("Error: %s from: %s" %(e,res)) 
                 
     def userJoined(self, user, channel):
 
         usernick = user.split('!', 1)[0]
-
-        if usernick == 'inhaps':
-            msg = "Hi, " + usernick
-            self.msg(channel, msg)
-            print "I said hi to inhaps!"
 
     def alterCollidedNick(self, nickname):
 
