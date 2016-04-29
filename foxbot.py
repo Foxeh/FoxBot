@@ -3,35 +3,11 @@ from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
-from wolfram import Wolfram
+from wolfram.wolfram import Wolfram
 
 import config
+import cmds
 
-###########################################################
-########              S e t t i n g s              ########
-###########################################################
-identity = {
-    'FoxBot': {
-        'nickname': 'FoxBot',
-        'realname': 'IRCBot',
-        'username': '',
-        'nickserv_pw': '',
-        'adminPass': '',
-        'wolframID': ''
-    },
-}
-networks = {
-    'SwiftIRC': {
-        'host': '',
-        'port': 6667,
-        'ssl': False,
-        'identity': identity['FoxBot'],
-        'autojoin': (
-            '',
-        )
-    },
-}
-###########################################################
 log.startLogging(sys.stdout)
 
 class TwistedBot(irc.IRCClient):
@@ -209,39 +185,6 @@ class TwistedBot(irc.IRCClient):
             
             msg = "Searches Wolfram Alpha... Wolfram knows all."
             self.notive(usernick, msg)
-
-    def callGoog(self, user, channel, msg, type):
-
-        usernick = user.split('!', 1)[0]
-        msgParts = msg.split(' ', 1)
-
-        query=urllib.urlencode({'q':msgParts[1]})
-        
-        start='<h2 class="r" style="display:inline;font-size:138%">'
-        end='</h2>'
-    
-        google=httplib.HTTPConnection("www.google.com")
-        google.request("GET","/search?"+query)
-        search=google.getresponse()
-        data=search.read()
-    
-        if data.find(start)==-1:
-            msg = "Follow link to find your answer: www.google.com/search?"+query
-            
-            if type == 0:
-                self.notice(usernick, msg)
-            elif type == 1:
-                self.msg(channel, msg)
-        
-        else:
-            begin=data.index(start)
-            result=data[begin+len(start):begin+data[begin:].index(end)]
-            result = result.replace("<font size=-2> </font>",",").replace(" &#215; 10<sup>","E").replace("</sup>","").replace("\xa0",",")
-            
-            if type == 0:
-                self.notice(usernick, result)
-            elif type == 1:
-                self.msg(channel, result)
             
     def callWolf(self, user, channel, msg, type):
         
@@ -335,14 +278,14 @@ class TwistedBotFactory(protocol.ClientFactory):
 
 if __name__ == '__main__':
 
-    for name in networks.keys():
+    for name in config.networks.keys():
 
-        factory = TwistedBotFactory(name, networks[name])
+        factory = TwistedBotFactory(name, config.networks[name])
 
-        host = networks[name]['host']
-        port = networks[name]['port']
+        host = config.networks[name]['host']
+        port = config.networks[name]['port']
 
-        if networks[name]['ssl']:
+        if config.networks[name]['ssl']:
             reactor.connectSSL(host, port, factory, ssl.ClientContextFactory())
         else:
             reactor.connectTCP(host, port, factory)
