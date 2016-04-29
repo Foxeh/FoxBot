@@ -255,7 +255,7 @@ class TwistedBot(irc.IRCClient):
         
         if not dataWolf:
             print "Nothing Found"
-            msg = "Wolfram could not understand you"
+            msg = "https://i.imgflip.com/62qwt.jpg"
             
             if type == 0:
                 self.notice(usernick, msg)
@@ -283,6 +283,7 @@ class TwistedBot(irc.IRCClient):
     def userJoined(self, user, channel):
 
         usernick = user.split('!', 1)[0]
+        print "%s joined %s" %(usernick, channel)
 
     def alterCollidedNick(self, nickname):
 
@@ -295,9 +296,7 @@ class TwistedBot(irc.IRCClient):
         print "Attempting to rejoin " + channel
 
     def userRenamed(self, oldname, newname):
-        """
-        Called when a user changes there nick
-        """
+
         print "%s is now %s" %(oldname, newname)
 
     def _get_nickname(self):
