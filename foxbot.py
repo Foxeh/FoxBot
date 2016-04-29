@@ -5,6 +5,8 @@ from twisted.python import log
 from twisted.words.protocols import irc
 from wolfram import Wolfram
 
+import config
+
 ###########################################################
 ########              S e t t i n g s              ########
 ###########################################################
