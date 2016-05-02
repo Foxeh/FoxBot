@@ -73,8 +73,7 @@ class TwistedBot(irc.IRCClient):
         print("[I have left %s]" %channel)
 
     def privmsg(self, user, channel, msg):
-
-        # object of the cmd
+        
         data = CmdData(self, user, channel, msg)
         
         timer = (time.time() - self.startTime)
