@@ -7,7 +7,7 @@ from cmds.wolfram import Wolfram
 
 import re
 import config
-#import FoxbotInterface
+import FoxbotInterface
 
 log.startLogging(sys.stdout)
 
@@ -17,6 +17,8 @@ class CmdData(object):
         self.user = user
         self.channel = channel
         self.msg = msg
+        
+        self.valid = self.validate()
         
         self.host = user.split('!', 1)[1]
         self.usernick = user.split('!', 1)[0]
@@ -39,13 +41,14 @@ class TwistedBot(irc.IRCClient):
     
     def __init__(self):
         
-        # interface = FoxbotInterface()
+        self.interface = FoxbotInterface()
+        self.interface.start(reactor)
         
         self.admin = []
         self.startTime = 0
 
     def connectionMade(self):
-
+        
         irc.IRCClient.connectionMade(self)
         print "Connection Established."
 
@@ -74,8 +77,16 @@ class TwistedBot(irc.IRCClient):
 
     def privmsg(self, user, channel, msg):
         
-        data = CmdData(self, user, channel, msg)
+        d = CmdData(self, user, channel, msg)
         
+        if data.valid: # check if the 
+            try:
+                f = self.interface.getFunc(d.method)
+                resp = f(d)
+            except Exception as e:
+                print ("Error: ", e)
+        
+        '''
         timer = (time.time() - self.startTime)
 
         host = user.split('!', 1)[1]
@@ -137,6 +148,7 @@ class TwistedBot(irc.IRCClient):
                 self.commands(user, channel, msg)
 
         self.startTime = time.time()
+        '''
 
     def commands(self, user, channel, msg):
 
