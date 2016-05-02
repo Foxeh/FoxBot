@@ -3,7 +3,7 @@ from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
-from wolfram.wolfram import Wolfram
+from cmds.wolfram import Wolfram
 
 import re
 import config
