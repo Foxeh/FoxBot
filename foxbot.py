@@ -5,14 +5,41 @@ from twisted.python import log
 from twisted.words.protocols import irc
 from wolfram.wolfram import Wolfram
 
+import re
 import config
-import cmds
+#import FoxbotInterface
 
 log.startLogging(sys.stdout)
+
+class CmdData(object):
+    def __init__(self, conn, user, channel, msg):
+        self.conn = conn
+        self.user = user
+        self.channel = channel
+        self.msg = msg
+        
+        self.host = user.split('!', 1)[1]
+        self.usernick = user.split('!', 1)[0]
+        
+        self.cmd = self.getCmd()
+    
+    def validate(self):
+        # make sure it's a valid cmd
+        string = self.msg.split(' ')[0]
+        return re.match(r"^([!@#$%^&*])([A-z]+)\s+(.*)$", string)
+    
+    def getCmd(self):
+        # break the cmd into its parts
+        string = self.msg.split(' ')[0] # gets the message
+        regex = re.compile(r"^(?P<action>[!@#$%^&*])(?P<method>[A-z]+)\s+(?P<parameters>.*)$")
+        match = regex.search(string)
+        return match.groupdict()
 
 class TwistedBot(irc.IRCClient):
     
     def __init__(self):
+        
+        # interface = FoxbotInterface()
         
         self.admin = []
         self.startTime = 0
@@ -47,11 +74,14 @@ class TwistedBot(irc.IRCClient):
 
     def privmsg(self, user, channel, msg):
 
+        data = CmdData(self, user, channel, msg)
+        
         timer = (time.time() - self.startTime)
 
         host = user.split('!', 1)[1]
         usernick = user.split('!', 1)[0]
         msgParts = msg.split(' ')
+        print ("msgParts:", msgParts)
         
         if channel == self.nickname:
 
