@@ -74,6 +74,7 @@ class TwistedBot(irc.IRCClient):
 
     def privmsg(self, user, channel, msg):
 
+        # object of the cmd
         data = CmdData(self, user, channel, msg)
         
         timer = (time.time() - self.startTime)
