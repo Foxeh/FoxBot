@@ -2,8 +2,8 @@
 ########              S e t t i n g s              ########
 ###########################################################
 identity = {
-    'FoxBot': {
-        'nickname': 'FoxBot',
+    'TestBot': {
+        'nickname': 'TestBot',
         'realname': 'IRCBot',
         'username': '',
         'nickserv_pw': '',
@@ -13,12 +13,12 @@ identity = {
 }
 networks = {
     'SwiftIRC': {
-        'host': '',
+        'host': 'bipartite.nj.us.SwiftIRC.net',
         'port': 6667,
         'ssl': False,
-        'identity': identity['FoxBot'],
+        'identity': identity['TestBot'],
         'autojoin': (
-            '',
+            '#fox',
         )
     },
 }

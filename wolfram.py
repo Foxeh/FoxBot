@@ -1,6 +1,8 @@
 import urllib,urllib2,httplib
 from xml.etree import ElementTree as etree
 
+from interface import Interface
+
 class Wolfram(object):
         
     def __init__(self, appid, query):

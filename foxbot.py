@@ -7,7 +7,7 @@ from cmds.wolfram import Wolfram
 
 import re
 import config
-import FoxbotInterface
+from foxbotinterface import FoxbotInterface
 
 log.startLogging(sys.stdout)
 

@@ -19,7 +19,7 @@ class FoxbotInterface(Interface):
         self.load_modules(FoxbotInterface.CMDS)
         try:
             for k in self.registry: 
-                if k != "foxbotsinterface":
+                if k != "foxbotinterface":
                     print(k)
                     self.registry[k].start(*args,**kwargs)
         except Exception as e:
