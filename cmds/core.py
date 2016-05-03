@@ -34,7 +34,7 @@ class Core(Interface):
     
             self.helpComs(data.user, data.channel, data.msg)
             
-    def ping(self, data):
+    def pingtest(self, data):
         # !ping
         msg = "\0038,1pong!"
         print('<%s> %s' %(usernick, msg))

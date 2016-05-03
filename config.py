@@ -3,7 +3,7 @@
 ###########################################################
 identity = {
     'TestBot': {
-        'nickname': 'TestBot',
+        'nickname': 'Unknown34893458',
         'realname': 'IRCBot',
         'username': '',
         'nickserv_pw': '',
@@ -13,7 +13,7 @@ identity = {
 }
 networks = {
     'SwiftIRC': {
-        'host': 'bipartite.nj.us.SwiftIRC.net',
+        'host': 'irc.SwiftIRC.net',
         'port': 6667,
         'ssl': False,
         'identity': identity['TestBot'],
