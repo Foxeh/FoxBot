@@ -4,7 +4,8 @@ from interface import Interface
 class Google(Interface):
     
     def google(self, data):
-    
+        print ("hit@@")
+        '''
         usernick = data.user.split('!', 1)[0]
         msgParts = data.msg.split(' ', 1)
     
@@ -35,3 +36,4 @@ class Google(Interface):
                 data.conn.notice(usernick, result)
             elif data.type == 1:
                 data.conn.msg(data.channel, result)
+        '''

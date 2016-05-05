@@ -17,25 +17,23 @@ class CmdData(object):
         self.user = user
         self.channel = channel
         self.msg = msg
-        
-        self.valid = self.validate()
-        
         self.host = user.split('!', 1)[1]
         self.usernick = user.split('!', 1)[0]
         
+        self.valid = self.validate()
         self.cmd = self.getCmd()
     
     def validate(self):
         # make sure it's a valid cmd
-        string = self.msg.split(' ')[0]
-        return re.match(r"^([!@#$%^&*])([A-z]+)\s+(.*)$", string)
+        return re.match(r"^[\!\@\#\$\%\^\&\*][A-z]+\s+.*$", self.msg)
     
     def getCmd(self):
         # break the cmd into its parts
-        string = self.msg.split(' ')[0] # gets the message
-        regex = re.compile(r"^(?P<action>[!@#$%^&*])(?P<method>[A-z]+)\s+(?P<parameters>.*)$")
-        match = regex.search(string)
-        return match.groupdict()
+        if(self.valid):
+            regex = re.compile(r"^(?P<action>[!@#$%^&*])(?P<method>[A-z]+)\s+(?P<parameters>.*)$")
+            match = regex.search(self.msg)
+            return match.groupdict()
+        return None
 
 class TwistedBot(irc.IRCClient):
     
@@ -63,9 +61,11 @@ class TwistedBot(irc.IRCClient):
 
         if network['identity']['nickserv_pw']:
             self.msg('NickServ', 'IDENTIFY %s' % network['identity']['nickserv_pw'])
-
+            print "here"
+            
         for channel in network['autojoin']:
             self.join(channel)
+            print "herechannel"
 
     def joined(self, channel):
 
@@ -77,14 +77,16 @@ class TwistedBot(irc.IRCClient):
 
     def privmsg(self, user, channel, msg):
         
-        d = CmdData(self, user, channel, msg)
-        
-        if data.valid: # check if the 
-            try:
-                f = self.interface.getFunc(d.method)
-                resp = f(d)
-            except Exception as e:
-                print ("Error: ", e)
+        # Make sure the foxbox is being refered to.
+        # self.conn.factory.network['identity']['nickname'] == msg[0]
+        if (True):
+            d = CmdData(self, user, channel, msg)
+            if d.valid: # check if the 
+                try:
+                    f = self.interface.getFunc(d.cmd["method"])
+                    resp = f(d)
+                except Exception as e:
+                    print ("Error: ", e)
         
         '''
         timer = (time.time() - self.startTime)
@@ -319,9 +321,12 @@ class TwistedBotFactory(protocol.ClientFactory):
         reactor.stop()
 
 if __name__ == '__main__':
-
+    
+    print config.networks
+    
     for name in config.networks.keys():
-
+        print("name %s"%name)
+        
         factory = TwistedBotFactory(name, config.networks[name])
 
         host = config.networks[name]['host']

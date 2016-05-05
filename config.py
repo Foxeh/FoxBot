@@ -3,22 +3,22 @@
 ###########################################################
 identity = {
     'TestBot': {
-        'nickname': 'Unknown34893458',
-        'realname': 'IRCBot',
-        'username': '',
+        'nickname': 'Unknon35',
+        'realname': 'IRCBotDerp',
+        'username': 'derpyder',
         'nickserv_pw': '',
-        'adminPass': '',
+        'adminPass': 'shitsngigs',
         'wolframID': ''
     },
 }
 networks = {
     'SwiftIRC': {
-        'host': 'irc.SwiftIRC.net',
+        'host': 'IRC.SwiftIRC.net',
         'port': 6667,
         'ssl': False,
         'identity': identity['TestBot'],
         'autojoin': (
-            '#fox',
+            'fox',
         )
     },
 }
