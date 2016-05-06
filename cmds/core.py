@@ -1,61 +1,68 @@
 import re,sys,unicodedata,time,math,httplib,urllib
 import config
 
+from cmds.admin import requiresAdmin
 from interface import Interface
     
 class Core(Interface):
-    def commands(self, data):
     
-        host = data.user.split('!', 1)[1]
-        usernick = data.user.split('!', 1)[0]
-        msgParts = data.msg.split(' ')
-    
-        if data.msg == "!ping":
-    
-            data.msg = "\0038,1pong!"
-            self.msg(data.channel, data.msg)
-            print('<%s> %s' %(usernick, data.msg))
-    
-        elif data.msg == "!info":
-    
-            msg = "I am a bot, made by Fox. \002!coms\002 for a list of commands."
-            self.notice(usernick, msg)
-            msg = "Will add more info at a later time."
-            self.notice(usernick, msg)
-        
-        elif data.msg == "!coms":
-    
-            commands = "Commands: ping | goog | wolf"
-            helpcom = "Use !help \002command\002 for help with a command."
-            self.notice(usernick, commands)
-            self.notice(usernick, helpcom)
-    
-        elif msgParts[0] == "!help":
-    
-            self.helpComs(data.user, data.channel, data.msg)
-            
-    def pingtest(self, data):
+    def ping(self, data):
         # !ping
         msg = "\0038,1pong!"
-        print('<%s> %s' %(usernick, msg))
-        return (data.channel, msg)
+        print('<%s> %s' %(data.usernick, msg))
+        data.conn.msg(data.channel, msg)
     
     def info(self, data):
         # !info
         msg = "I am a bot, made by Fox. \002!coms\002 for a list of commands."
-        return self.notice(data.usernick, msg)
+        data.conn.notice(data.usernick, msg)
         msg = "Will add more info at a later time."
-        return self.notice(data.usernick, msg)
+        data.conn.notice(data.usernick, msg)
             
         
     def coms(self, data):
         # !coms
         commands = "Commands: ping | goog | wolf"
         helpcom = "Use !help \002command\002 for help with a command."
-        self.notice(usernick, commands)
-        self.notice(usernick, helpcom)
+        data.conn.notice(data.usernick, commands)
+        data.conn.notice(data.usernick, helpcom)
     
     def help(self, data):
         # !help
-        pass
+        if data.cmd['parameters'] == "ping":
+
+            msg = "Ping: Pong..."
+            data.conn.notice(data.usernick, msg)
+
+        elif data.cmd['parameters'] == "google":
+
+            msg = "Uses a google search"
+            data.conn.notice(data.usernick, msg)
         
+        elif data.cmd['parameters'] == "wolf":
+            
+            msg = "Searches Wolfram Alpha... Wolfram knows all."
+            data.conn.notice(data.usernick, msg)
+    
+    @requiresAdmin
+    def join(self, data):
+        print "hittttt"
+        #self.join(data.cmd['parameters'])
+    
+    @requiresAdmin
+    def leave(self, data):
+        #if a parameter was given
+        if data.cmd['parameters']:
+            msg = "Leaving #" + data.cmd['parameters']
+            data.conn.msg(data.channel, msg)
+            data.conn.part(data.cmd['parameters'])
+        else:
+            msg = "Ok fine :("
+            data.conn.msg(data.channel, msg)
+            data.conn.part(data.channel)
+    
+    @requiresAdmin
+    def logout(self, data):
+        data.conn.admin.remove(data.host)
+        msg = "You have been removed from admin list."
+        data.conn.msg(data.channel, msg)

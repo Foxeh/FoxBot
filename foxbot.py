@@ -13,32 +13,33 @@ log.startLogging(sys.stdout)
 
 class CmdData(object):
     def __init__(self, conn, user, channel, msg):
-        self.conn = conn
-        self.user = user
-        self.channel = channel
         self.msg = msg
-        self.host = user.split('!', 1)[1]
-        self.usernick = user.split('!', 1)[0]
-        
         self.valid = self.validate()
-        self.cmd = self.getCmd()
+        
+        self.admin = ["Driste"]
+        
+        if(self.valid):
+            self.conn = conn
+            self.user = user
+            self.channel = channel
+            self.host = user.split('!', 1)[1]
+            self.usernick = user.split('!', 1)[0]
+            
+            self.cmd = self.getCmd()
     
     def validate(self):
         # make sure it's a valid cmd
-        return re.match(r"^[\!\@\#\$\%\^\&\*][A-z]+\s+.*$", self.msg)
+        return re.match(r"^[!.@#$%^&*][A-z]+\s+.*$", self.msg)
     
     def getCmd(self):
         # break the cmd into its parts
-        if(self.valid):
-            regex = re.compile(r"^(?P<action>[!@#$%^&*])(?P<method>[A-z]+)\s+(?P<parameters>.*)$")
-            match = regex.search(self.msg)
-            return match.groupdict()
-        return None
+        regex = re.compile(r"^(?P<action>[!.@#$%^&*])(?P<method>[A-z]+)\s+(?P<parameters>.*)$")
+        match = regex.search(self.msg)
+        return match.groupdict()
 
 class TwistedBot(irc.IRCClient):
     
     def __init__(self):
-        
         self.interface = FoxbotInterface()
         self.interface.start(reactor)
         
@@ -46,17 +47,14 @@ class TwistedBot(irc.IRCClient):
         self.startTime = 0
 
     def connectionMade(self):
-        
         irc.IRCClient.connectionMade(self)
         print "Connection Established."
 
     def connectionLost(self, reason):
-
         irc.IRCClient.connectionLost(self, reason)
         print "Connection Lost."
 
     def signedOn(self):
-
         network = self.factory.network
 
         if network['identity']['nickserv_pw']:
@@ -68,224 +66,41 @@ class TwistedBot(irc.IRCClient):
             print "herechannel"
 
     def joined(self, channel):
-
         print("[I have joined %s]" %channel)
 
     def left(self, channel):
-
         print("[I have left %s]" %channel)
 
     def privmsg(self, user, channel, msg):
-        
-        # Make sure the foxbox is being refered to.
-        # self.conn.factory.network['identity']['nickname'] == msg[0]
-        if (True):
+        timer = (time.time() - self.startTime)
+        if (timer > 3):
+            print ("Incoming message: ", msg)
             d = CmdData(self, user, channel, msg)
-            if d.valid: # check if the 
+            print ("Msg Validation: ", d.valid)
+            if d.valid:
                 try:
                     f = self.interface.getFunc(d.cmd["method"])
                     resp = f(d)
                 except Exception as e:
                     print ("Error: ", e)
+            
+            del d
         
-        '''
-        timer = (time.time() - self.startTime)
-
-        host = user.split('!', 1)[1]
-        usernick = user.split('!', 1)[0]
-        msgParts = msg.split(' ')
-        print ("msgParts:", msgParts)
-        
-        if channel == self.nickname:
-
-            self.adminLogin(user, channel, msg)
-
-        if (timer > 3) or host in self.admin:
-
-            if msgParts[0].startswith("!join") and host in self.admin:
-
-                channel = msgParts[1]
-                self.join(channel)
-
-            elif msgParts[0].startswith("!leave") and host in self.admin:
-
-                if msg == "!leave":
-
-                    msg = "Ok fine :("
-                    self.msg(channel, msg)
-                    self.part(channel)
-
-                else:
-
-                    channel1 = msgParts[1]
-                    msg = "Leaving #" + msgParts[1]
-                    self.msg(channel, msg)
-                    self.part(channel1)
-
-            elif msgParts[0].startswith("!logout") and host in self.admin:
-
-                self.admin.remove(host)
-                msg = "You have been removed from admin list."
-                self.msg(channel, msg)
-
-            elif msgParts[0].startswith(".google") or msgParts[0].startswith("!google"):
-
-                if msgParts[0].startswith(".google"):
-                    type = 0
-                elif msgParts[0].startswith("!google"):
-                    type = 1
-
-                self.callGoog(user, channel, msg, type)
-                
-            elif msgParts[0].startswith(".wolf") or msgParts[0].startswith("!wolf"):
-                
-                if msgParts[0].startswith(".wolf"):
-                    type = 0
-                elif msgParts[0].startswith("!wolf"):
-                    type = 1
-                
-                self.callWolf(user, channel, msg, type)
-
-            else:
-                self.commands(user, channel, msg)
-
         self.startTime = time.time()
-        '''
-
-    def commands(self, user, channel, msg):
-
-        host = user.split('!', 1)[1]
-        usernick = user.split('!', 1)[0]
-        msgParts = msg.split(' ')
-
-        if msg == "!ping":
-
-            msg = "\0038,1pong!"
-            self.msg(channel, msg)
-            print('<%s> %s' %(usernick, msg))
-
-        elif msg == "!info":
-
-            msg = "I am a bot, made by Fox. \002!coms\002 for a list of commands."
-            self.notice(usernick, msg)
-            msg = "Will add more info at a later time."
-            self.notice(usernick, msg)
         
-        elif msg == "!coms":
-
-            commands = "Commands: ping | goog | wolf"
-            helpcom = "Use !help \002command\002 for help with a command."
-            self.notice(usernick, commands)
-            self.notice(usernick, helpcom)
-
-        elif msgParts[0] == "!help":
-
-            self.helpComs(user, channel, msg)
-    
-    def adminLogin(self, user, channel, msg):
-        
-        network = self.factory.network
-        host = user.split('!', 1)[1]
-        usernick = user.split('!', 1)[0]
-        msgParts = msg.split(' ')
-        
-        print('<%s> %s' % (usernick, msgParts))
-
-        if msg == ("!login %s" % network['identity']['adminPass']):
-
-            self.admin.append(host)
-            msg = "You are now logged in for admin commands."
-            self.msg(usernick, msg)
-            msg = " "
-            self.msg(usernick,msg)
-            msg = "     \0034,1!join\003 \x1Fchannel\x1F   Joins channel specified"
-            self.msg(usernick, msg)
-            msg = "     \0034,1!leave\003            Leaves current channel"
-            self.msg(usernick,msg)
-            msg = "     \0034,1!logout\003           Logout of admin"
-            self.msg(usernick, msg)
-
-        elif msgParts[0].startswith("!login") and msg != ("!login %s" % network['identity']['adminPass']):
-            
-            msg = "Incorrect login, go away."
-            self.msg(usernick, msg)
-
-    def helpComs(self, user, channel, msg):
-
-        usernick = user.split('!', 1)[0]
-        msgParts = msg.split(' ')
-
-        if msgParts[1] == "ping":
-
-            msg = "Ping: Pong..."
-            self.notice(usernick, msg)
-
-        elif msgParts[1] == "google":
-
-            msg = "Uses a google search"
-            self.notice(usernick, msg)
-        
-        elif msgParts[1] == "wolf":
-            
-            msg = "Searches Wolfram Alpha... Wolfram knows all."
-            self.notive(usernick, msg)
-            
-    def callWolf(self, user, channel, msg, type):
-        
-        network = self.factory.network
-        usernick = user.split('!', 1)[0]
-        msgParts = msg.split(' ', 1)
-        appid = network['identity']['wolframID']
-        query = msgParts[1]
-        print('<%s> %s' % (usernick, msgParts))
-        
-        self.wolfram = Wolfram(appid, query)
-        dataWolf = self.wolfram.search()
-        
-        if not dataWolf:
-            print "Nothing Found"
-            msg = "https://i.imgflip.com/62qwt.jpg"
-            
-            if type == 0:
-                self.notice(usernick, msg)
-            elif type == 1:
-                self.msg(channel, msg)
-
-        try: 
-            msg = dataWolf['Result']
-            if type == 0:
-                self.notice(usernick, msg)
-            elif type == 1:
-                self.msg(channel, msg)
-        except:
-            for res in dataWolf:
-                try:
-                    msg = res+": "+dataWolf[res]
-                    if type == 0:
-                        self.notice(usernick, msg)
-                    elif type == 1:
-                        self.msg(channel, msg)
-                except:
-                    e = sys.exc_info()[0]
-                    print ("Error: %s from: %s" %(e,res)) 
-                
     def userJoined(self, user, channel):
-
         usernick = user.split('!', 1)[0]
         print "%s joined %s" %(usernick, channel)
 
     def alterCollidedNick(self, nickname):
-
         return nickname + '^'
 
     def kickedFrom(self, channel, kicker, message):
-
         print "I was kicked. \nChannel: " + channel + "\nKicker: " + kicker + "\nReason: " + message
         self.join(channel)
         print "Attempting to rejoin " + channel
 
     def userRenamed(self, oldname, newname):
-
         print "%s is now %s" %(oldname, newname)
 
     def _get_nickname(self):
@@ -302,26 +117,21 @@ class TwistedBot(irc.IRCClient):
     username = property(_get_username)
 
 class TwistedBotFactory(protocol.ClientFactory):
-
     protocol = TwistedBot
 
     def __init__(self, network_name, network):
-
         self.network_name = network_name
         self.network = network
 
     def clientConnectionLost(self, connector, reason):
-
         print('client connection lost')
         connector.connect()
 
     def clientConnectionFailed(self, connector, reason):
-
         print('client connection failed')
         reactor.stop()
 
 if __name__ == '__main__':
-    
     print config.networks
     
     for name in config.networks.keys():
