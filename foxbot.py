@@ -29,11 +29,11 @@ class CmdData(object):
     
     def validate(self):
         # make sure it's a valid cmd
-        return re.match(r"^[!.@#$%^&*][A-z]+\s+.*$", self.msg)
+        return re.match(r"^[\W][\w]+\s*.*$", self.msg)
     
     def getCmd(self):
         # break the cmd into its parts
-        regex = re.compile(r"^(?P<action>[!.@#$%^&*])(?P<method>[A-z]+)\s+(?P<parameters>.*)$")
+        regex = re.compile(r"^(?P<action>\W)(?P<method>\w+)\s*(?P<parameters>.*)$")
         match = regex.search(self.msg)
         return match.groupdict()
 

@@ -19,7 +19,6 @@ class Google(Interface):
     
         if data.find(start)==-1:
             msg = "Follow link to find your answer: www.google.com/search?"+query
-            print ("hit")
             if foxdata.cmd['action'] == ".":
                 print foxdata.usernick
                 foxdata.conn.notice(foxdata.usernick, msg)

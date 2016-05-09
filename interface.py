@@ -10,7 +10,7 @@ class InterfaceMeta(type):
             interface_id = name.lower()
             cls.registry[interface_id] = cls()  
             for attrname in dir(cls.registry[interface_id]):
-                if attrname.startswith('__'): continue
+                if attrname.startswith('__') or attrname.startswith('_'): continue
                 if attrname not in cls.funcMap:
                     attr = getattr(cls.registry[interface_id], attrname)
                     if type(attr) == types.MethodType:
