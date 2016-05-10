@@ -12,21 +12,12 @@ from foxbotinterface import FoxbotInterface
 log.startLogging(sys.stdout)
 
 class CmdData(object):
+    '''
+        A data object for holding the infomation to pass to plugins.
+    '''
     def __init__(self, conn, user, channel, msg):
         self.msg = msg
         self.valid = self.validate()
-        
-        self.admin = ["Driste"]
-        
-        self.actionEnum = {
-            "!" : "bang",
-            "." : "dot",
-            "?" : "question",
-            "/" : "slash"
-        }
-
-        # keylookup
-        self.action = self.actionEnum[self.valid['action']]
 
         if(self.valid):
             self.conn = conn
@@ -34,8 +25,18 @@ class CmdData(object):
             self.channel = channel
             self.host = user.split('!', 1)[1]
             self.usernick = user.split('!', 1)[0]
-            
+            self.admin = ["Driste"]
             self.cmd = self.getCmd()
+
+            self.actionEnum = {
+                "!" : "bang",
+                "." : "dot",
+                "?" : "question",
+                "/" : "slash"
+            }
+
+            # keylookup
+            self.action = self.actionEnum[self.cmd['action']]
     
     def validate(self):
         # make sure it's a valid cmd
