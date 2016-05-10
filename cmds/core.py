@@ -6,13 +6,13 @@ from interface import Interface
     
 class Core(Interface):
     
-    def ping(self, data):
+    def bang_ping(self, data):
         # !ping
         msg = "\0038,1pong!"
         print('<%s> %s' %(data.usernick, msg))
         data.conn.msg(data.channel, msg)
     
-    def info(self, data):
+    def bang_info(self, data):
         # !info
         msg = "I am a bot, made by Fox. \002!coms\002 for a list of commands."
         data.conn.notice(data.usernick, msg)
@@ -20,14 +20,14 @@ class Core(Interface):
         data.conn.notice(data.usernick, msg)
             
         
-    def coms(self, data):
+    def bang_coms(self, data):
         # !coms
         commands = "Commands: ping | goog | wolf"
         helpcom = "Use !help \002command\002 for help with a command."
         data.conn.notice(data.usernick, commands)
         data.conn.notice(data.usernick, helpcom)
     
-    def help(self, data):
+    def bang_help(self, data):
         # !help
         if data.cmd['parameters'] == "ping":
 
@@ -45,12 +45,12 @@ class Core(Interface):
             data.conn.notice(data.usernick, msg)
     
     @requiresAdmin
-    def join(self, data):
+    def bang_join(self, data):
         print "hittttt"
         #self.join(data.cmd['parameters'])
     
     @requiresAdmin
-    def leave(self, data):
+    def bang_leave(self, data):
         #if a parameter was given
         if data.cmd['parameters']:
             msg = "Leaving #" + data.cmd['parameters']
@@ -62,7 +62,7 @@ class Core(Interface):
             data.conn.part(data.channel)
     
     @requiresAdmin
-    def logout(self, data):
+    def bang_logout(self, data):
         data.conn.admin.remove(data.host)
         msg = "You have been removed from admin list."
         data.conn.msg(data.channel, msg)

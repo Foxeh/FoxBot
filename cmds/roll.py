@@ -6,25 +6,21 @@ from interface import Interface
 
 class Roll(Interface):
 
-	def roll(self, data):
-		if not data.cmd["parameters"] or data.cmd["parameters"] == "help":
-			data.conn.msg(foxdata.channel, "Try /roll 1d20+5")
-			return
+	def _roll(self, data):
+		r = r"^(\d*)d(\d+)(([+-])(\d+)+)?" 
 
-		print "test"
-
-	def _slashroll(self, data):
+	def slash_roll(self, data):
 		# /roll
 		pass
 
-	def _bangroll(self, data):
+	def bang_roll(self, data):
 		# !roll
 		pass
 
-	def _dotroll(self, data):
+	def dot_roll(self, data):
 		# .roll
 		pass
 
-	def _questionroll(self, data):
+	def question_roll(self, data):
 		# ?roll
 		pass

@@ -18,6 +18,16 @@ class CmdData(object):
         
         self.admin = ["Driste"]
         
+        self.actionEnum = {
+            "!" : "bang",
+            "." : "dot",
+            "?" : "question",
+            "/" : "slash"
+        }
+
+        # keylookup
+        self.action = self.actionEnum[self.valid['action']]
+
         if(self.valid):
             self.conn = conn
             self.user = user
@@ -79,7 +89,8 @@ class TwistedBot(irc.IRCClient):
             print ("Msg Validation: ", d.valid)
             if d.valid:
                 try:
-                    f = self.interface.getFunc(d.cmd["method"])
+                    # ex. !google = bang_google
+                    f = self.interface.getFunc(d.action + "_" + d.cmd["method"])
                     resp = f(d)
                 except Exception as e:
                     print ("Error: ", e)

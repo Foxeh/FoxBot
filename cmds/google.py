@@ -3,7 +3,7 @@ from interface import Interface
 
 class Google(Interface):
     
-    def google(self, foxdata):
+    def _google(self, foxdata):
         
         print ("Google", foxdata.cmd)
     
@@ -19,18 +19,19 @@ class Google(Interface):
     
         if data.find(start)==-1:
             msg = "Follow link to find your answer: www.google.com/search?"+query
-            if foxdata.cmd['action'] == ".":
-                print foxdata.usernick
-                foxdata.conn.notice(foxdata.usernick, msg)
-            elif foxdata.cmd['action'] == "!":
-                foxdata.conn.msg(foxdata.channel, msg)
-        
-        else:
-            begin=data.index(start)
-            result=data[begin+len(start):begin+data[begin:].index(end)]
-            result = result.replace("<font size=-2> </font>",",").replace(" &#215; 10<sup>","E").replace("</sup>","").replace("\xa0",",")
-            
-            if foxdata.cmd['action'] == ".":
-                foxdata.conn.notice(foxdata.usernick, "test")
-            elif foxdata.cmd['action'] == "!":
-                foxdata.conn.msg(foxdata.channel, "test")
+            return (msg, 0)
+        return (msg, 1)
+
+    def dot_google(self, foxdata):
+        resp, err = self._google(foxdata)
+        if not err:
+            foxdata.conn.notice(foxdata.usernick, resp)
+        else: 
+            foxdata.conn.notice(foxdata.usernick, "Error fetching result.")
+
+    def bang_google(self, foxdata):
+        resp, err = self._google(foxdata)
+        if not err:
+            foxdata.conn.msg(foxdata.channel, resp)
+        else: 
+            foxdata.conn.msg(foxdata.channel, resp)

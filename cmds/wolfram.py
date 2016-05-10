@@ -5,7 +5,7 @@ from interface import Interface
 
 class Wolfram(Interface):
         
-    def wolf(self, foxdata):
+    def dot_wolf(self, foxdata):
         
         print('<%s> %s' % (foxdata.usernick, foxdata.cmd['parameters']))
         dataWolf = self.registry['wolfram']._search(foxdata)
