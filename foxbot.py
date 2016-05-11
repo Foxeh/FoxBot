@@ -1,11 +1,10 @@
-import re,sys,unicodedata,time,math,httplib,urllib
+import re,sys,unicodedata,time,math,httplib,urllib,traceback
 from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.python import log
 from twisted.words.protocols import irc
 from cmds.wolfram import Wolfram
 
-import re
 import config
 from foxbotinterface import FoxbotInterface
 
@@ -33,7 +32,7 @@ class CmdData(object):
                 "." : "dot",
                 "?" : "question",
                 "/" : "slash"
-            }
+            } 
 
             # keylookup
             self.action = self.actionEnum[self.cmd['action']]
@@ -84,19 +83,22 @@ class TwistedBot(irc.IRCClient):
 
     def privmsg(self, user, channel, msg):
         timer = (time.time() - self.startTime)
-        if (timer > 3):
-            print ("Incoming message: ", msg)
-            d = CmdData(self, user, channel, msg)
-            print ("Msg Validation: ", d.valid)
-            if d.valid:
-                try:
-                    # ex. !google = bang_google
-                    f = self.interface.getFunc(d.action + "_" + d.cmd["method"])
-                    resp = f(d)
-                except Exception as e:
-                    print ("Error: ", e)
-            
-            del d
+        #if (timer > 3):
+        print ("Incoming message: ", msg)
+        d = CmdData(self, user, channel, msg)
+        print ("Msg Validation: ", d.valid)
+        if d.valid:
+            try:
+                # ex. !google = bang_google
+                f = self.interface.getFunc(d.action + "_" + d.cmd["method"])
+                resp = f(d)
+            except Exception as e:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                stackTrace = traceback.format_exception(exc_type, exc_value,exc_traceback)
+                for line in stackTrace:
+                    print(line)
+        
+        del d
         
         self.startTime = time.time()
         
