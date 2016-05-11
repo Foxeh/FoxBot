@@ -2,23 +2,23 @@
 ########              S e t t i n g s              ########
 ###########################################################
 identity = {
-    'Bot': {
-        'nickname': '',
-        'realname': '',
-        'username': '',
+    'Dristebot': {
+        'nickname': 'DristeBot',
+        'realname': 'IRCBotDerp',
+        'username': 'derpyder',
         'nickserv_pw': '',
-        'adminPass': '',
+        'adminPass': 'shitsngigs',
         'wolframID': ''
     },
 }
 networks = {
     'SwiftIRC': {
-        'host': '',
+        'host': 'IRC.SwiftIRC.net',
         'port': 6667,
         'ssl': False,
-        'identity': identity['Bot'],
+        'identity': identity['Dristebot'],
         'autojoin': (
-            '',
+            'fox',
         )
     },
 }

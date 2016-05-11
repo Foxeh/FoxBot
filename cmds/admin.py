@@ -6,7 +6,7 @@ from interface import Interface
 
 class Admin(Interface):
     
-    def admin(self, data):
+    def _admin(self, data):
         pass
     
     def _adminLogin(self, user, channel, msg):

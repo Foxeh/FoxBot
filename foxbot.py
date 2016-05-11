@@ -27,7 +27,7 @@ class CmdData(object):
             self.admin = ["Driste"]
             self.cmd = self.getCmd()
 
-            self.actionEnum = {
+            self.actionLookup = {
                 "!" : "bang",
                 "." : "dot",
                 "?" : "question",
@@ -35,7 +35,7 @@ class CmdData(object):
             } 
 
             # keylookup
-            self.action = self.actionEnum[self.cmd['action']]
+            self.action = self.actionLookup[self.cmd['action']]
     
     def validate(self):
         # make sure it's a valid cmd

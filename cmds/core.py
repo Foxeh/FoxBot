@@ -18,31 +18,25 @@ class Core(Interface):
         data.conn.notice(data.usernick, msg)
         msg = "Will add more info at a later time."
         data.conn.notice(data.usernick, msg)
-            
-        
-    def bang_coms(self, data):
-        # !coms
-        commands = "Commands: ping | goog | wolf"
-        helpcom = "Use !help \002command\002 for help with a command."
-        data.conn.notice(data.usernick, commands)
-        data.conn.notice(data.usernick, helpcom)
     
     def bang_help(self, data):
         # !help
-        if data.cmd['parameters'] == "ping":
-
-            msg = "Ping: Pong..."
-            data.conn.notice(data.usernick, msg)
-
-        elif data.cmd['parameters'] == "google":
-
-            msg = "Uses a google search"
-            data.conn.notice(data.usernick, msg)
+        helpLines = [
+            'FoxBot Help:',
+            '    Note: Add a "?" before a command for an example.',
+            '        ex. ?google',
+            'Available Commands:',
+            '    !ping',
+            '    !info'
+        ]
         
-        elif data.cmd['parameters'] == "wolf":
-            
-            msg = "Searches Wolfram Alpha... Wolfram knows all."
-            data.conn.notice(data.usernick, msg)
+        for k in self.registry: 
+                if k not in ['foxbotinterface', 'core', 'admin']:
+                    helpLines.append('    '+k)
+
+        for line in helpLines:
+            data.conn.msg(data.usernick, line)
+        #data.conn.notice(data.usernick, msg)
     
     @requiresAdmin
     def bang_join(self, data):
