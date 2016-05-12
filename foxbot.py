@@ -24,14 +24,18 @@ class CmdData(object):
             self.channel = channel
             self.host = user.split('!', 1)[1]
             self.usernick = user.split('!', 1)[0]
-            self.admin = ["Driste"]
+            self.admin = config.admin
             self.cmd = self.getCmd()
 
             self.actionLookup = {
                 "!" : "bang",
                 "." : "dot",
                 "?" : "question",
-                "/" : "slash"
+                "/" : "slash",
+                "@" : "at",
+                "&" : "amp",
+                "*" : "star",
+                "#" : "sharp"
             } 
 
             # keylookup
@@ -84,20 +88,19 @@ class TwistedBot(irc.IRCClient):
     def privmsg(self, user, channel, msg):
         timer = (time.time() - self.startTime)
         #if (timer > 3):
-        print ("Incoming message: ", msg)
         d = CmdData(self, user, channel, msg)
-        print ("Msg Validation: ", d.valid)
         if d.valid:
             try:
                 # ex. !google = bang_google
-                f = self.interface.getFunc(d.action + "_" + d.cmd["method"])
-                resp = f(d)
+                call = d.action + "_" + d.cmd["method"]
+                if call in self.interface.funcMap:
+                    f = self.interface.getFunc(call)
+                    resp = f(d)
             except Exception as e:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 stackTrace = traceback.format_exception(exc_type, exc_value,exc_traceback)
                 for line in stackTrace:
                     print(line)
-        
         del d
         
         self.startTime = time.time()

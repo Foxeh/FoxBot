@@ -1,11 +1,22 @@
-# FoxBot
-##Twisted IRC Bot
+## FoxBot - A Plugable Twisted IRC Bot
+
+### Available IRC Plugins
+
+Google - Returns first result.    
+Roll - Random dice rolling system for games.    
+Wolfram - Evaluate through wolfram!    
 
 ### Packages
 
+Twisted 16.1.1    
+http://twistedmatrix.com/trac/wiki/Downloads
+
+WolframAlpha 2.4    
 `sudo pip install wolfralpha`
+Then get an API key - https://developer.wolframalpha.com/portal/signin.html
 
-### Get your API key here
-https://developer.wolframalpha.com/portal/signin.html
-
-Set variables in settings before starting.
+### To get started:
+Set variables in config.py.
+```
+python foxbox.py
+```

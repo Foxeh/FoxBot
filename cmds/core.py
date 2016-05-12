@@ -19,6 +19,10 @@ class Core(Interface):
         msg = "Will add more info at a later time."
         data.conn.notice(data.usernick, msg)
     
+    def question_help(self, data):
+        self.bang_help(data)
+    def dot_help(self, data):
+        self.bang_help(data)
     def bang_help(self, data):
         # !help
         helpLines = [
