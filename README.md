@@ -1,4 +1,5 @@
 ## FoxBot - A Plugable Twisted IRC Bot
+Join #fox in IRC.SwiftIRC.net for help.
 
 ### Available IRC Plugins
 
