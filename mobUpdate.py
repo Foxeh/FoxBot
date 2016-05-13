@@ -14,12 +14,18 @@ class MobUpdate(object):
         while True:
             try:
                 x+=1
-                result = json.loads(urllib2.urlopen(self.mobUri+str(x)).read())
-                resp = str(x) + "," + result['name']
-                self.f.write(resp + '\n')
-                y=0
+                response = urllib2.urlopen(self.mobUri+data.cmd['parameters']).read()
+                if (response):
+                    result = json.loads(response)
+                    resp = str(x) + "," + result['name']
+                    self.f.write(resp + '\n')
+                    y=0
+                else:
+                    y +=1
+                    if y == '10':
+                        break
             except ValueError:
-                y+=1       
+                y+=1
                 if y == '10':
                     break
                 

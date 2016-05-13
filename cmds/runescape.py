@@ -16,9 +16,15 @@ class Runescape(Interface):
         data.conn.msg(data.usernick, self.hsUri)
         
     def bang_mob(self,data):
-        result = json.loads(urllib2.urlopen(self.mobUri+data.cmd['parameters']).read())
-        resp = result['name'] + " | " + str(result['level']) + " | " + str(result['lifepoints']) + " | " + result['weakness'] + " | " + result['xp']
-        data.conn.msg(data.channel, resp.encode('utf-8'))
+        
+        print ("result: ", urllib2.urlopen(self.mobUri+data.cmd['parameters']).read())
+        response = urllib2.urlopen(self.mobUri+data.cmd['parameters']).read()
+        if (response):
+            result = json.loads(response)
+            resp = result['name'] + " | Level " + str(result['level']) + " | Lifepoints: " + str(result['lifepoints']) + " | Weakness: " + result['weakness'] + " | XP: " + result['xp']
+            data.conn.msg(data.channel, resp.encode('utf-8'))
+        else:
+            data.conn.msg(data.channel, "No Beast with id = "+data.cmd['parameters'])
         
     def question_mob(self,data):
         helpLines = (
