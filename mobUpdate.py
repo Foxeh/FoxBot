@@ -9,22 +9,22 @@ class MobUpdate(object):
         
     def updater(self):
         x=0
+        y=0
+        print 'Starting, this may take awhile.'
         while True:
             try:
                 x+=1
-                print 'here ' + str(x)
                 result = json.loads(urllib2.urlopen(self.mobUri+str(x)).read())
                 resp = str(x) + "," + result['name']
                 self.f.write(resp + '\n')
-                
+                y=0
+            except ValueError:
+                y+=1       
                 if y == '10':
                     break
-                y=0
                 
-            except ValueError:
-                y+=1
-                print 'error'
-
+        print 'Jobs Done'
+        
 if __name__ == '__main__':
     m = MobUpdate()
     m.updater()
