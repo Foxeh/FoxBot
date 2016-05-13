@@ -18,6 +18,12 @@ class Core(Interface):
         data.conn.notice(data.usernick, msg)
         msg = "Will add more info at a later time."
         data.conn.notice(data.usernick, msg)
+        
+    def dot_t(self, data):
+        """
+        Return the current date and time.
+        """
+        data.conn.msg(data.usernick, time.strftime("%a, %d %b %Y %H:%M:%S", time.gmtime()))
     
     def question_help(self, data):
         self.bang_help(data)

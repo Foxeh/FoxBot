@@ -15,13 +15,8 @@ class Runescape(Interface):
         data.conn.msg(data.usernick, self.geUri)
         
     def bang_hs(self,data):
-        response = False
         try:
             response = urllib2.urlopen(self.hsUri+data.cmd['parameters'])
-        except urllib2.HTTPError as e:
-            data.conn.msg(data.channel, "User not found.")
-        
-        if response:
             msg = ""
             rows = response.read().splitlines()
             for i,skill in enumerate(self.skills): # enumerate adds a counter (i) to the iterable (self.skills).
@@ -30,9 +25,10 @@ class Runescape(Interface):
                     continue
                 msg += skill + " " + str(r[1]) + " | "
             data.conn.msg(data.channel, msg[:-1])
+        except urllib2.HTTPError as e:
+            data.conn.msg(data.channel, "User not found.")
         
     def bang_mob(self,data):
-        print ("result: ", urllib2.urlopen(self.mobUri+data.cmd['parameters']).read())
         response = urllib2.urlopen(self.mobUri+data.cmd['parameters']).read()
         attrs = (("","name"), (" | LVL ","level"), (" | HP ","lifepoints"), (" | XP ","xp"), (" | Weakness: ","weakness"))
         if response:
