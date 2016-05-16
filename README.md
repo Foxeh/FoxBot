@@ -19,7 +19,9 @@ WolframAlpha 2.4
 Then get an API key - https://developer.wolframalpha.com/portal/signin.html
 
 ### To get started:
-Set variables in config.py.    
+Set variables in `config.py`.   
+    
+Then run foxbot:   
 ```
 python foxbox.py
 ```
