@@ -17,7 +17,7 @@ class MobUpdate(object):
                 response = urllib2.urlopen(self.mobUri+str(x)).read()
                 if (response):
                     result = json.loads(response)
-                    resp = str(x) + "," + result['name']
+                    resp = str(x) + " " + result['name']
                     self.f.write(resp + '\n')
                     y=0
                 else:
