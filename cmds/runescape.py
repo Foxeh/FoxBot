@@ -31,24 +31,26 @@ class Runescape(Interface):
     def bang_mob(self,data):
         f = file('../mobData.dat')
         for line in f:
-            mob = line.split(' ', 1)[1].rstrip()
+            try:
+                mob = line.split(' ', 1)[1].rstrip()
+            except:
+                data.conn.msg(data.channel, "No Beast with id = "+data.cmd['parameters'])
+                break
             if data.cmd['parameters'].lower() == mob.lower():
                 num = line.split(' ', 1)[0]
-
-        response = urllib2.urlopen(self.mobUri+num).read()
-        attrs = (("","name"), (" | LVL ","level"), (" | HP ","lifepoints"), (" | XP ","xp"), (" | Weakness: ","weakness"))
-        if response:
-            result = json.loads(response)
-            msg = ""
-            for label,attr in attrs:
-                if attr in result:
-                    if type(result[attr]) is int:
-                        result[attr] = str(result[attr])
-                    msg += label + result[attr]
-            data.conn.msg(data.channel, msg.encode('utf-8'))
-        else:
-            data.conn.msg(data.channel, "No Beast with id = "+data.cmd['parameters'])
-        
+                response = urllib2.urlopen(self.mobUri+num).read()
+                attrs = (("","name"), (" | LVL ","level"), (" | HP ","lifepoints"), (" | XP ","xp"), (" | Weakness: ","weakness"))
+                if response:
+                    result = json.loads(response)
+                    msg = ""
+                    for label,attr in attrs:
+                        if attr in result:
+                            if type(result[attr]) is int:
+                                result[attr] = str(result[attr])
+                            msg += label + result[attr]
+                    data.conn.msg(data.channel, msg.encode('utf-8'))
+                    break
+                            
     def question_mob(self,data):
         helpLines = (
             'Runescape Mob Lookup Help:',
