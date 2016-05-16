@@ -29,7 +29,13 @@ class Runescape(Interface):
             data.conn.msg(data.channel, "User not found.")
         
     def bang_mob(self,data):
-        response = urllib2.urlopen(self.mobUri+data.cmd['parameters']).read()
+        f = file('../mobData.dat')
+        for line in f:
+            mob = line.split(' ', 1)[1].rstrip()
+            if data.cmd['parameters'].lower() == mob.lower():
+                num = line.split(' ', 1)[0]
+
+        response = urllib2.urlopen(self.mobUri+num).read()
         attrs = (("","name"), (" | LVL ","level"), (" | HP ","lifepoints"), (" | XP ","xp"), (" | Weakness: ","weakness"))
         if response:
             result = json.loads(response)
@@ -46,9 +52,9 @@ class Runescape(Interface):
     def question_mob(self,data):
         helpLines = (
             'Runescape Mob Lookup Help:',
-            '    <!.>mob <item id>',
+            '    <!.>mob <mobName>',
             'Example Mob Lookup: ',
-            '    !mob 49',
+            '    !mob hellhound',
             'Result:',
             '    Hellhound | Level: 92 | Lifepoints : 3300 | Weakness : Slashing | XP: 344.4'
         )
