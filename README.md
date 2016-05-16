@@ -57,9 +57,9 @@ Methods are called by what the command is:
 Now use the parameter `data`, which is an object with everything you need for the method.    
 ```python
 def dot_sample(self, data):
-	data.conn.msg(data.channel, "You typed in '.sample'!"
+	data.conn.msg(data.channel, "You typed in '.sample'!")
 ```
-
+#####API:    
 | Param        		| Definition		|
 | ---------------------- | -------------|
 | `data.conn` | is the reference to anything with the bot, like notices, or messages:  |
@@ -85,5 +85,5 @@ from cmds.admin import requiresAdmin
 
 @requiresAdmin
 def dot_sample(self, data):
-	data.conn.msg(data.channel, "You typed in '.sample'!"
+	data.conn.msg(data.channel, "You are an admin.")
 ```
