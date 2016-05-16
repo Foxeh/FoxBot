@@ -14,7 +14,7 @@ class MobUpdate(object):
         while True:
             try:
                 x+=1
-                response = urllib2.urlopen(self.mobUri+data.cmd['parameters']).read()
+                response = urllib2.urlopen(self.mobUri+str(x)).read()
                 if (response):
                     result = json.loads(response)
                     resp = str(x) + "," + result['name']
