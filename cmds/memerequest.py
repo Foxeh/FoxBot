@@ -6,19 +6,16 @@ from interface import Interface
 
 class MemeRequest(Interface):
     '''
-        Declare variables with desired to and from email addresses.
+        Declare variables with desired to and from email addresses in config.py
         Only works if the from is a gmail address.
 
         Example usage:
         .mr <text describing meme>
     '''
     def start(self, *args, **kwargs):
-        # address to send requests to
-        self.to = ""
-        # must be logged into gmail in order to work
-        self.fr = ""
-        # password for form email
-        self.pwd = ""
+        self.to = config.TO
+        self.fr = config.FROM
+        self.pwd = config.PASSWORD
         self.replies = [ "dank meme-o friend-o",
                         "spicy",
                         "#nicememe",
