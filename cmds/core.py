@@ -14,7 +14,7 @@ class Core(Interface):
     
     def bang_info(self, data):
         # !info
-        msg = "I am a bot, made by Fox. \002!coms\002 for a list of commands."
+        msg = "I am a bot, made by Fox. \002?help\002 for a list of commands."
         data.conn.notice(data.usernick, msg)
         msg = "Will add more info at a later time."
         data.conn.notice(data.usernick, msg)
