@@ -21,7 +21,7 @@ class Runescape(Interface):
         return dict
     
     def bang_ge(self,data):
-        data.conn.msg(data.usernick, self.geUri)
+        data.conn.msg(data.usernick, self.geUri+data.cmd['parameters'])
         
     def bang_hs(self,data):
         try:
