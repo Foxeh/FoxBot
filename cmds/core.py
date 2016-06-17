@@ -50,7 +50,7 @@ class Core(Interface):
     
     @requiresAdmin
     def bang_join(self, data):
-        self.join(data.cmd['parameters'])
+        data.conn.join(data.cmd['parameters'])
     
     @requiresAdmin
     def bang_leave(self, data):
