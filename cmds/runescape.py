@@ -21,7 +21,7 @@ class Runescape(Interface):
         return dict
     
     def bang_ge(self,data):
-        data.conn.msg(data.usernick, self.geUri+data.cmd['parameters'])
+        data.conn.notice(data.usernick, self.geUri+data.cmd['parameters'])
         
     def bang_hs(self,data):
         try:
@@ -63,4 +63,4 @@ class Runescape(Interface):
         )
 
         for line in helpLines:
-            data.conn.msg(data.usernick, line)
+            data.conn.notice(data.usernick, line)
