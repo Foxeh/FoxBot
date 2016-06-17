@@ -23,7 +23,7 @@ class Core(Interface):
         """
         Return the current date and time.
         """
-        data.conn.msg(data.usernick, time.strftime("%a, %d %b %Y %H:%M:%S", time.gmtime()))
+        data.conn.notice(data.usernick, time.strftime("%a, %d %b %Y %H:%M:%S", time.gmtime()))
     
     def question_help(self, data):
         self.bang_help(data)
@@ -45,13 +45,12 @@ class Core(Interface):
                     helpLines.append('    '+k)
 
         for line in helpLines:
-            data.conn.msg(data.usernick, line)
+            data.conn.notice(data.usernick, line)
         #data.conn.notice(data.usernick, msg)
     
     @requiresAdmin
     def bang_join(self, data):
-        print "hittttt"
-        #self.join(data.cmd['parameters'])
+        self.join(data.cmd['parameters'])
     
     @requiresAdmin
     def bang_leave(self, data):
