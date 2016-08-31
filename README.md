@@ -15,7 +15,7 @@ Twisted Python
 http://twistedmatrix.com/trac/wiki/Downloads
 
 WolframAlpha
-`sudo pip install wolfralpha`    
+`sudo pip install wolframalpha`    
 Then get an API key - https://developer.wolframalpha.com/portal/signin.html
 
 ### To get started:
