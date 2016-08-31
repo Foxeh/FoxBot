@@ -11,10 +11,10 @@ Dictionary - Get the first definition of a word.
 
 ### Packages
 
-Twisted 16.1.1    
+Twisted Python    
 http://twistedmatrix.com/trac/wiki/Downloads
 
-WolframAlpha 2.4    
+WolframAlpha
 `sudo pip install wolfralpha`    
 Then get an API key - https://developer.wolframalpha.com/portal/signin.html
 
