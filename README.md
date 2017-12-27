@@ -37,7 +37,7 @@ from interface import Interface
 class Sample(Interface):
 ```
 
-####Step 2:    
+#### Step 2:    
 Create your method that will respond to commands in the IRC channel.    
 ```python
 # For the command: .sample
@@ -46,22 +46,22 @@ def dot_sample(self, data):
 ```
 
 Methods are called by what the command is:    
-	The command:    
-		`.test hi`    
-	Calls:    
-		```python
-		def dot_test(self, data):
-		```
+The command:    
+`.test hi`    
+Calls:    
+```python
+def dot_test(self, data):
+```
 		
-####Step 3:    
+#### Step 3:    
 Now use the parameter `data`, which is an object with everything you need for the method.    
 ```python
 def dot_sample(self, data):
 	data.conn.msg(data.channel, "You typed in '.sample'!")
 ```
-#####API:    
+##### API:    
 | Param        		| Definition		|
-| ---------------------- | -------------|
+| ---------------------- | ------------- |
 | `data.conn` | is the reference to anything with the bot, like notices, or messages:  |
 | `data.conn.notice(<to>, <msg>)` | sends a notice to the recip. | 
 | `data.conn.msg(<to>, <msg>)` | sends a message to the recip. |
@@ -77,7 +77,7 @@ def dot_sample(self, data):
 | `data.cmd['parameters']` | the last part of a command. ----- ex. !google `test` |
 
 
-####Step 4. (Optional)    
+#### Step 4. (Optional)    
 If the command needs to be protected, add your name to `admin` in `config.py` and use the provided decorator:    
 
 ```python
