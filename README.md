@@ -29,7 +29,7 @@ python foxbox.py
 ### Development
 Creating a plug-in for Foxbot is easier than any other bot.
 
-####Step 1:    
+#### Step 1:    
 Create a class inheriting `Interface`, and put it in the `cmd/` folder.    
 ```python
 from interface import Interface
